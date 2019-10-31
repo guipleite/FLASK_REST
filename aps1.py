@@ -5,20 +5,20 @@ import json
 app = Flask(__name__)
 api = Api(app)
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web',
-        'done': False
-    }
-]
+# tasks = [
+#     {
+#         'id': 1,
+#         'title': u'Buy groceries',
+#         'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
+#         'done': False
+#     },
+#     {
+#         'id': 2,
+#         'title': u'Learn Python',
+#         'description': u'Need to find a good Python tutorial on the web',
+#         'done': False
+#     }
+# ]
 
 task_fields = {
     'title': fields.String,
@@ -46,11 +46,17 @@ class TaskListAPI(Resource):
         super(TaskListAPI, self).__init__()
 
     def get(self):
+        with open("db.json", "r") as jsonFile:
+            tasks = json.load(jsonFile)
         return {'tasks': [marshal(task, task_fields) for task in tasks]}
 
 
     def post(self):
         args = self.reqparse.parse_args()
+
+        with open("db.json", "r") as jsonFile:
+            tasks = json.load(jsonFile)
+
         task = {
             'id': tasks[-1]['id'] + 1 if len(tasks) > 0 else 1,
             'title': args['title'],
@@ -71,12 +77,18 @@ class TaskAPI(Resource):
         super(TaskAPI, self).__init__()
 
     def get(self, id):
+        with open("db.json", "r") as jsonFile:
+           tasks = json.load(jsonFile)
+
         task = [task for task in tasks if task['id'] == id]
         if len(task) == 0:
             abort(404)
         return {'task': marshal(task[0], task_fields)}
 
     def put(self, id):
+        with open("db.json", "r") as jsonFile:
+           tasks = json.load(jsonFile)
+           
         task = [task for task in tasks if task['id'] == id]
         if len(task) == 0:
             abort(404)
@@ -89,6 +101,9 @@ class TaskAPI(Resource):
         return jsonify({'task': marshal(task[0], task_fields)})
 
     def delete(self, id):
+        with open("db.json", "r") as jsonFile:
+           tasks = json.load(jsonFile)
+           
         task = [task for task in tasks if task['id'] == id]
         if len(task) == 0:
             abort(404)

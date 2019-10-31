@@ -10,7 +10,7 @@ if sys.argv[1] == "add":     # adicionar [lista de valores dos atributos da clas
     print(res)
 
 if sys.argv[1] == "list":    # listar
-    res = req.get(serv_addr +" todo/api/tasks/")
+    res = req.get(serv_addr + "todo/api/tasks/")
     print(res)
 
 if sys.argv[1] == "search":  # buscar

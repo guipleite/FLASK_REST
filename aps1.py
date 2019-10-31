@@ -63,7 +63,10 @@ class TaskListAPI(Resource):
             'description': args['description'],
             'done': False
         }
-        tasks.append(task)
+        #tasks.append(task)
+        with open("db.json", "w") as jsonFile:
+            json.dump(tasks, jsonFile) 
+        #tasks.append(task)
         return {'task': marshal(task, task_fields)}
 
 api.add_resource(TaskListAPI, '/todo/api/tasks/', endpoint = 'tasks')

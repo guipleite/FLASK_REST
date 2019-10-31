@@ -77,15 +77,16 @@ class TaskAPI(Resource):
         return {'task': marshal(task[0], task_fields)}
 
     def put(self, id):
-        task = filter(lambda t: t['id'] == id, tasks)
+        task = [task for task in tasks if task['id'] == id]
         if len(task) == 0:
             abort(404)
-        task = task[0]
-        args = self.reqparse.parse_args()
-        for k, v in args.iteritems():
-            if v != None:
-                task[k] = v
-        return jsonify( { 'task': make_public_task(task) }) 
+        if not request.json:
+            abort(400)
+        task[0]['title'] = request.json.get('title', task[0]['title'])
+        task[0]['description'] = request.json.get('description',
+                                                task[0]['description'])
+        task[0]['done'] = request.json.get('done', task[0]['done'])
+        return jsonify({'task': marshal(task[0], task_fields)})
 
     def delete(self, id):
         task = [task for task in tasks if task['id'] == id]

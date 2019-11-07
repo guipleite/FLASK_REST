@@ -1,17 +1,17 @@
-sudo apt-get update
+sudo apt-get update -y
 
-sudo apt-get upgrade
+sudo apt-get upgrade -y
 
-sudo apt install python3
+sudo apt install python3 -y
 
 sudo apt install python3-pip -y
 sudo apt install python-pip -y
 
 export LC_ALL=C
 
-sudo pip3 install --upgrade pip
+sudo pip3 install --upgrade pip 
 
-sudo pip install --upgrade pip
+sudo pip install --upgrade pip 
 
 sudo pip install flask
 

@@ -2,15 +2,18 @@ sudo apt-get update
 
 sudo apt-get upgrade
 
-export LC_ALL=C
-
 sudo apt install python3
 
-sudo apt install python3-pip3 -y
+sudo apt install python3-pip -y
+sudo apt install python-pip -y
 
-pip3 install --upgrade pip
+export LC_ALL=C
 
-pip3 install Flask
+sudo pip3 install --upgrade pip
 
-pip3 install flask_restful
+sudo pip install --upgrade pip
+
+sudo pip install flask
+
+sudo pip install flask_restful
 

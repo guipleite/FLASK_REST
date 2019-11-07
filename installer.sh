@@ -1,10 +1,12 @@
 sudo apt-get update
 
-sudo apt install python3
-
-sudo apt install python3-pip -y
+sudo apt-get upgrade
 
 export LC_ALL=C
+
+sudo apt install python3
+
+sudo apt install python3-pip3 -y
 
 pip3 install --upgrade pip
 

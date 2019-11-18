@@ -8,10 +8,12 @@ sudo apt-get update
 
 sudo apt-get install -y mongodb-org
 
+rm /var/lib/mongodb mongod.lock
+
 sudo service mongod start
 
 sudo mkdir -p /data/db
 
 sudo chmod -R go+w /data/db
 
-mongod --port 27017 --dbpath /data/db
+mongod --port 27017 --dbpath /data/db --bind_ip_all

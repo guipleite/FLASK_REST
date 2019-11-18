@@ -12,10 +12,9 @@ except:
     serv_addr = "localhost"
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = "mongodb://{}:27017/todo".format(serv_addr)
+#app.config['MONGO_URI'] = "mongodb://{}:27017/todo".format(serv_addr)
 
 api = Api(app)
-mongo = PyMongo(app)
 
 task_fields = {
     'title': fields.String,
@@ -30,7 +29,6 @@ class HealthCheck(Resource):
         resp = jsonify(success=True)
         resp.status_code = 200
         return resp
-        #return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 api.add_resource(HealthCheck, '/healthcheck/', endpoint = 'healthcheck')
 
@@ -41,9 +39,12 @@ class TaskListAPI(Resource):
             help = 'No task title provided', location = 'json')
         self.reqparse.add_argument('description', type = str, default = "", location = 'json')
 
-        client = pymongo.MongoClient()
-        db = client[ "todo" ] # makes a test database called "test"
-        self.collection = db[ "tasks" ] #makes a collection called "test" in the "test" db
+        serv_addr = environ["serv_addr"]
+
+        client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
+
+        db = client.todo
+        self.collection = db.tasks #makes a collection called "test" in the "test" db
         
 
         super(TaskListAPI, self).__init__()
@@ -72,9 +73,13 @@ class TaskAPI(Resource):
         self.reqparse.add_argument('title', type = str, location = 'json')
         self.reqparse.add_argument('description', type = str, location = 'json')
         self.reqparse.add_argument('done', type = bool, location = 'json')
-        client = pymongo.MongoClient()
-        db = client[ "todo" ] # makes a test database called "test"
-        self.collection = db[ "tasks" ] #makes a collection called "test" in the "test" db
+        
+        serv_addr = environ["serv_addr"]
+
+        client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
+
+        db = client.todo
+        self.collection = db.tasks #makes a collection called "test" in the "test" db
 
         super(TaskAPI, self).__init__()
 

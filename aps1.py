@@ -8,6 +8,7 @@ import pymongo
 try:
     serv_addr = environ["serv_addr"]
 except:
+    print("Servidor externo nao definido, testando com o localhost")
     serv_addr = "localhost"
 
 app = Flask(__name__)

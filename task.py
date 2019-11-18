@@ -5,7 +5,7 @@ import requests as req
 
 
 try:
-    serv_addr = environ["serv_addr"]
+    serv_addr = environ["serv_addr"]+":27017/"
 except:
     print("Nao foi possivel configurar a variavel de ambiente")
     serv_addr = "http://127.0.0.1:5000/" #environ["serv_addr"]

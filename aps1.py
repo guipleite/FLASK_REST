@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, make_response
 from flask_restful import Api, Resource,reqparse,fields, marshal
 import json
-from os import environ
+import os
 from flask_pymongo import PyMongo
 import pymongo  
 
@@ -39,7 +39,7 @@ class TaskListAPI(Resource):
             help = 'No task title provided', location = 'json')
         self.reqparse.add_argument('description', type = str, default = "", location = 'json')
 
-        serv_addr = environ["serv_addr"]
+        serv_addr = os.getenv('serv_addr', None)
 
         client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
 
@@ -73,8 +73,8 @@ class TaskAPI(Resource):
         self.reqparse.add_argument('title', type = str, location = 'json')
         self.reqparse.add_argument('description', type = str, location = 'json')
         self.reqparse.add_argument('done', type = bool, location = 'json')
-        
-        serv_addr = environ["serv_addr"]
+
+        serv_addr = os.getenv('serv_addr', None)
 
         client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
 

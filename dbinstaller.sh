@@ -10,8 +10,6 @@ sudo apt-get install -y mongodb-org
 
 sudo rm /var/lib/mongodb mongod.lock
 
-sudo service mongod start
-
 sudo mkdir -p /data/db
 
 sudo chmod -R go+w /data/db

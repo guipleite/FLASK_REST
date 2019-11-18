@@ -1,24 +1,20 @@
 from flask import Flask, request, jsonify, abort, make_response
 from flask_restful import Api, Resource,reqparse,fields, marshal
 import json
+from os import environ
+from flask_pymongo import PyMongo
+import pymongo  
+
+try:
+    serv_addr = environ["serv_addr"]
+except:
+    serv_addr = "localhost"
 
 app = Flask(__name__)
-api = Api(app)
+app.config['MONGO_URI'] = "mongodb://{}:27017/todo".format(serv_addr)
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web',
-        'done': False
-    }
-]
+api = Api(app)
+mongo = PyMongo(app)
 
 task_fields = {
     'title': fields.String,
@@ -43,21 +39,28 @@ class TaskListAPI(Resource):
         self.reqparse.add_argument('title', type = str, required = True,
             help = 'No task title provided', location = 'json')
         self.reqparse.add_argument('description', type = str, default = "", location = 'json')
+
+        client = pymongo.MongoClient()
+        db = client[ "todo" ] # makes a test database called "test"
+        self.collection = db[ "tasks" ] #makes a collection called "test" in the "test" db
+        
+
         super(TaskListAPI, self).__init__()
 
     def get(self):
-        return {'tasks': [marshal(task, task_fields) for task in tasks]}
-
+        return {'tasks': [marshal(task, task_fields)  for task in self.collection.find()]}
 
     def post(self):
         args = self.reqparse.parse_args()
+        tasks = self.collection.find()
+        
         task = {
-            'id': tasks[-1]['id'] + 1 if len(tasks) > 0 else 1,
+            'id': tasks.sort([("id", -1)])[0]["id"] + 1 if self.collection.count() > 0 else 1,
             'title': args['title'],
             'description': args['description'],
             'done': False
         }
-        tasks.append(task)
+        self.collection.insert_one(task)
         return {'task': marshal(task, task_fields)}
 
 api.add_resource(TaskListAPI, '/todo/api/tasks/', endpoint = 'tasks')
@@ -68,34 +71,41 @@ class TaskAPI(Resource):
         self.reqparse.add_argument('title', type = str, location = 'json')
         self.reqparse.add_argument('description', type = str, location = 'json')
         self.reqparse.add_argument('done', type = bool, location = 'json')
+        client = pymongo.MongoClient()
+        db = client[ "todo" ] # makes a test database called "test"
+        self.collection = db[ "tasks" ] #makes a collection called "test" in the "test" db
+
         super(TaskAPI, self).__init__()
 
     def get(self, id):
-        task = [task for task in tasks if task['id'] == id]
+        task = [task  for task in self.collection.find() if task['id'] == id]
         if len(task) == 0:
             abort(404)
         return {'task': marshal(task[0], task_fields)}
 
     def put(self, id):
-        task = [task for task in tasks if task['id'] == id]
-        if len(task) == 0:
+        task =  self.collection.find({"id": id})
+        if (self.collection.find({"id": id})).count() == 0:
             abort(404)
         if not request.json:
             abort(400)
-        task[0]['title'] = request.json.get('title', task[0]['title'])
-        task[0]['description'] = request.json.get('description',
-                                                task[0]['description'])
-        task[0]['done'] = request.json.get('done', task[0]['done'])
-        return jsonify({'task': marshal(task[0], task_fields)})
+    
+        newvalues = { "$set": { "title":  request.json.get('title', task[0]['title']),
+                                "description": request.json.get('description',task[0]['description']),
+                                "done":  request.json.get('done', task[0]['done'])} }
+
+        req = jsonify({'task': marshal(task[0], task_fields)})
+        self.collection.update_one(task[0], newvalues)
+
+        return req
 
     def delete(self, id):
-        task = [task for task in tasks if task['id'] == id]
-        if len(task) == 0:
+        if (self.collection.find({"id": id})).count() == 0:
             abort(404)
-        tasks.remove(task[0])
+        self.collection.delete_one({"id": id})
         return {'result': True}
 
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint = 'task')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True)
+    app.run(debug=True)

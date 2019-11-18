@@ -15,3 +15,4 @@ sudo pip install flask
 
 sudo pip install flask_restful
 
+sudo pip install flask-pymongo

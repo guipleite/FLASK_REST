@@ -10,7 +10,7 @@ import requests as req
 #     print("Nao foi possivel configurar a variavel de ambiente")
 #     serv_addr = "http://127.0.0.1:5000/" #environ["serv_addr"]
 
-serv_addr = = "http://0.0.0.0:5000/"
+serv_addr = "http://0.0.0.0:5000/"
 
 if sys.argv[1] == "add":     # adicionar [lista de valores dos atributos da classe]
     task = {"title":sys.argv[2], "description":sys.argv[3]}

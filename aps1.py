@@ -10,7 +10,6 @@ try:
     serv_addr = environ["serv_addr"]
 except:
     print("Servidor externo nao definido, testando com o localhost")
-    serv_addr = "localhost"
 
 app = Flask(__name__)
 #app.config['MONGO_URI'] = "mongodb://{}:27017/todo".format(serv_addr)

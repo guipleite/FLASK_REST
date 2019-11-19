@@ -5,6 +5,7 @@ from os import environ
 from flask_pymongo import PyMongo
 import pymongo  
 
+global serv_addr
 try:
     serv_addr = environ["serv_addr"]
 except:
@@ -39,7 +40,6 @@ class TaskListAPI(Resource):
             help = 'No task title provided', location = 'json')
         self.reqparse.add_argument('description', type = str, default = "", location = 'json')
 
-        serv_addr = environ["serv_addr"]
 
         client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
 
@@ -73,8 +73,6 @@ class TaskAPI(Resource):
         self.reqparse.add_argument('title', type = str, location = 'json')
         self.reqparse.add_argument('description', type = str, location = 'json')
         self.reqparse.add_argument('done', type = bool, location = 'json')
-
-        serv_addr = environ["serv_addr"]
 
         client = pymongo.MongoClient("mongodb://{}:27017/todo".format(serv_addr)) # defaults to port 27017
 

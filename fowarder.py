@@ -9,7 +9,7 @@ app = Flask(__name__)
 api = Api(app)
 
 global serv_addr
-serv_addr = environ["serv_addr"] #addr
+serv_addr = "http://"+environ["serv_addr"]+"/" #addr
 
 task_fields = {
     'title': fields.String,
@@ -82,4 +82,4 @@ class TaskAPI(Resource):
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint = 'task')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0,debug=True)

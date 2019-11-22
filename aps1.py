@@ -7,10 +7,10 @@ import pymongo
 
 global serv_addr
 try:
-    serv_addr = ["serv_addr"]#addr
+    serv_addr = environ["serv_addr"]#addr
 except:
     f=open("/Spark_REST/addr",'r')
-    serv_addr = f.read()[:-2]
+    serv_addr = f.read()[:-1]
 
 app = Flask(__name__)
 #app.config['MONGO_URI'] = "mongodb://{}:27017/todo".format(serv_addr)

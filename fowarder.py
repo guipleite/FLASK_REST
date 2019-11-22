@@ -13,7 +13,7 @@ try:
     serv_addr = "http://"+environ["serv_addr"]+":5000/" #addr
 except:
     f=open("/Spark_REST/addr",'r')
-    serv_addr = "http://"+f.read()[:-2]+":5000/"
+    serv_addr = "http://"+f.read()[:-1]+":5000/"
 
 task_fields = {
     'title': fields.String,

@@ -1,0 +1,13 @@
+[Unit]
+Description=fowarder
+After=network.target
+
+
+[Service]
+User=ubuntu
+ExecStart=/usr/bin/python3 /Spark_REST/aps1.py
+Restart=always
+
+
+[Install]
+WantedBy=multi-user.target

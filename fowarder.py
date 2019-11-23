@@ -74,7 +74,7 @@ class TaskAPI(Resource):
         if not request.json:
             abort(400)
 
-        res = req.put(url = serv_addr + "todo/api/tasks/"+str(id), data= args)
+        res = req.put(url = serv_addr + "todo/api/tasks/"+str(id), headers=request.headers,  json=request.get_json())
 
         #return jsonify({'task': marshal(task[0], task_fields)})
         return jsonify(res.json())
